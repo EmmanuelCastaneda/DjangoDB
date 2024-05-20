@@ -3,6 +3,10 @@ from django.db import Error
 from appPeliculas.models import Genero,Pelicula
 from django.http import HttpResponse,JsonResponse
 from django.views.decorators.csrf import csrf_protect,csrf_exempt
+from bson import ObjectId
+from django.shortcuts import render, redirect
+import os
+from django.conf import settings;
 
 # Create your views here.
 
@@ -61,3 +65,36 @@ def agregarPelicula (request):
     
     # return JsonResponse(retorno)
     return render(request,"agregarPelicula.html",retorno)
+def eliminarPelicula(request, id):
+    try:
+        PeliEliminar = Pelicula.objects.get(pk=ObjectId(id))
+        PeliEliminar.delete()
+        mensaje = "Eliminado Correctamente"
+    except Error as error:
+        mensaje = str(error)
+    retorno={"mensaje":mensaje}
+    
+    return redirect ("/")
+def editarPelicula(request):
+    try:
+        IDPelicula = ObjectId(request.POST['IDPelicula'])
+        peliculaeditar = Pelicula.objects.get(pk=IDPelicula)
+        peliculaeditar.pelCodigo = request.POST["codigo"]
+        peliculaeditar.pelTitulo = request.POST["titulo"]
+        peliculaeditar.pelProtagonista = request.POST["protagonista"]
+        peliculaeditar.pelDuracion = int(request.POST["duracion"])
+        peliculaeditar.pelResumen = request.POST["resumen"]
+        if 'foto' in request.FILES:
+            foto = request.FILES["foto"]
+            if peliculaeditar.pelFoto:
+                os.remove(os.path.join(settings.MEDIA_ROOT, str(peliculaeditar.pelFoto)))
+            peliculaeditar.pelGenero = foto
+        IDGenero = ObjectId(request.POST["IDGenero"])
+        Genero = Genero.objects.get(pk=IDGenero)
+        peliculaeditar.pelGenero = Genero
+        peliculaeditar.save()
+        mensaje = "Ha sido editado correctamente"
+    except Error as error:
+        mensaje = str(error)
+    retorno = {"mensaje": mensaje}
+    return redirect("/")

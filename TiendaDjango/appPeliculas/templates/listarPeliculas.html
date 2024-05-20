@@ -54,7 +54,10 @@
                         <img src="/media/{{p.pelFoto}}" alt="" width="100" height="100">
                     </td>
                     <td>{{p.pelGenero.genNombre}}</td>
-                    <td class="text-center"><a href="/consultarPelicula/{{p.id}}/"></a> </td>
+                    <td class="text-center"><a href="/consultarPelicula/{{p.id}}/"></a>
+                        <button onclick="eliminarPelicula('{{p.pk}}')" class="btn btn-danger">Eliminar</button>
+                     </td>
+                    
                 </tr>
                 {% endfor %}
             </tbody>

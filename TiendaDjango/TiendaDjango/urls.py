@@ -28,6 +28,8 @@ urlpatterns = [
     path('',views.listarPeliculas),
     path('vistaAgregarPelicula/',views.vistaAgregarPelicula),
     path('agregarPelicula/',views.agregarPelicula),
+    path('eliminarPelicula/<str:id>/', views.eliminarPelicula),
+    path('editarPelicula/', views.actualizarPelicula),
 ]
 if settings.DEBUG:
     urlpatterns +=static(settings.MEDIA_URL,
